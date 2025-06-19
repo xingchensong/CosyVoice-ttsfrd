@@ -2,7 +2,28 @@ import sys
 import subprocess
 import pathlib
 import zipfile
-import os
+import urllib.request
+import hashlib
+
+
+def download_with_progress(url, dest_path, expected_sha256=None):
+    print(f"Downloading {url}...")
+
+    def progress_hook(block_num, block_size, total_size):
+        if total_size > 0:
+            percent = min(100, (block_num * block_size * 100) // total_size)
+            print(f"\rDownload progress: {percent}%", end="", flush=True)
+
+    urllib.request.urlretrieve(url, dest_path, progress_hook)
+    print()
+
+    if expected_sha256:
+        print("Verifying file integrity...")
+        with open(dest_path, 'rb') as f:
+            file_hash = hashlib.sha256(f.read()).hexdigest()
+        if file_hash != expected_sha256:
+            raise ValueError(f"File integrity check failed. Expected: {expected_sha256}, Got: {file_hash}")
+        print("File integrity verified.")
 
 
 def main():
@@ -13,24 +34,36 @@ def main():
         # Find the directory where this file is located, to locate the entire package
         wrapper_package_dir = pathlib.Path(__file__).parent
         bundled_files_dir = wrapper_package_dir / "bundled_files"
+        resource_dir = wrapper_package_dir / "resource"
 
         print("--- Running Post-Installation Setup for CosyVoice-TTSFRD ---")
 
-        # 1. Unzip resource.zip
-        resource_zip_path = bundled_files_dir / "resource.zip"
-        unzip_target_dir = wrapper_package_dir
+        # 1. Download and unzip resource.zip from GitHub releases
+        resource_zip_path = wrapper_package_dir / "resource.zip"
 
-        if resource_zip_path.exists():
-            print(f"Unzipping resources to {unzip_target_dir}...")
-            with zipfile.ZipFile(resource_zip_path, 'r') as zip_ref:
-                zip_ref.extractall(unzip_target_dir)
+        if not resource_dir.exists() or not any(resource_dir.iterdir()):
+            print("Downloading resources from GitHub releases...")
 
-            print("Resources unzipped. Package contents:")
-            for item in os.listdir(unzip_target_dir):
-                print(f"- {item}")
+            # GitHub release URL
+            resource_url = "https://github.com/xingchensong/CosyVoice-ttsfrd/releases/download/v0.4.3/resource.zip"
+            expected_sha256 = "dcb3970fd4f52d036f245493360d97d0da1014f917deb4b9d83a3ded97483113"
+
+            try:
+                download_with_progress(resource_url, resource_zip_path, expected_sha256)
+
+                print(f"Unzipping resources to {wrapper_package_dir}...")
+                with zipfile.ZipFile(resource_zip_path, 'r') as zip_ref:
+                    zip_ref.extractall(wrapper_package_dir)
+
+                resource_zip_path.unlink()
+
+                print("Resources downloaded and extracted successfully.")
+            except Exception as e:
+                print(f"Failed to download resources: {e}")
+                print("Please check your internet connection and try again.")
+                sys.exit(1)
         else:
-            print(f"ERROR: Could not find {resource_zip_path}")
-            sys.exit(1)
+            print("Resources already exist, skipping download.")
 
         # 2. Install the dependency and main program whl files
         pip_command = [sys.executable, "-m", "pip"]
