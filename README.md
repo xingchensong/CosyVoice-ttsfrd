@@ -5,7 +5,7 @@ This package is a wrapper for the `ttsfrd` library used in CosyVoice. It simplif
 ## !! Important
 
 - **Platform**: This package will only work on **64-bit Linux with Python 3.10**.
-- **License**: This package redistributes software under the [Specify License Here, e.g., Apache 2.0 License]. The original license is included in the CosyVoice package.
+- **License**: This package redistributes software under the [Apache 2.0 License], which is the original license used in CosyVoice.
 - **Purpose**: This is a convenience wrapper. All credit goes to the original authors of CosyVoice and the `ttsfrd` library.
 
 ## Installation
