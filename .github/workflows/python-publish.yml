@@ -13,6 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
+      with:
+        lfs: true
     - uses: actions-ecosystem/action-regex-match@v2
       id: regex-match
       with:
