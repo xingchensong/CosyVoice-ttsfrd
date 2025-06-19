@@ -1,0 +1,1 @@
+src/cosyvoice_ttsfrd/bundled_files/resource.zip filter=lfs diff=lfs merge=lfs -text
