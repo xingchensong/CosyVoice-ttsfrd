@@ -12,7 +12,7 @@ This package is a wrapper for the `ttsfrd` library used in CosyVoice. It simplif
 
 ```bash
 # Step 1: Install this wrapper package
-pip install cosyvoice-ttsfrd
+pip install -i https://pypi.org/simple/ cosyvoice-ttsfrd
 # Step 2: After the wrapper is installed, you must run the following command in your terminal. This will install the actual `ttsfrd` libraries and unzip the required resources.
 cosyvoice-post-install
 ```
@@ -23,6 +23,11 @@ The installation process will automatically install the bundled `ttsfrd` wheels 
 ▶ cosyvoice-post-install
 CosyVoice-ttsfrd initialized. Resources are expected in: /mnt/user-ssd/songxingchen/.conda/envs/touchnet/lib/python3.10/site-packages/cosyvoice_ttsfrd/resource
 --- Running Post-Installation Setup for CosyVoice-TTSFRD ---
+Downloading resources from GitHub releases...
+Downloading https://github.com/xingchensong/CosyVoice-ttsfrd/releases/download/v0.4.3/resource.zip...
+Download progress: 100%
+Verifying file integrity...
+File integrity verified.
 Unzipping resources to /mnt/user-ssd/songxingchen/.conda/envs/touchnet/lib/python3.10/site-packages/cosyvoice_ttsfrd...
 Resources unzipped. Package contents:
 - __init__.py
